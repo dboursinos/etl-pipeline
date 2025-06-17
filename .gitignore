@@ -1,0 +1,10 @@
+airflow_data/
+!docker/airflow_data/
+docker/airflow_data/airflow/dags/
+docker/airflow_data/airflow/spark_jobs/
+docker/airflow_data/airflow/trinio_jobs/
+docker/airflow_data/airflow/dbt/
+docker/airflow_data/airflow/config/
+
+*.pyc
+*.log

@@ -1,0 +1,5 @@
+init-scripts/
+mariadb-data/
+lake/data/
+viz/
+
