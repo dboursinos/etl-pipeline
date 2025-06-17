@@ -56,15 +56,24 @@ FROM iceberg.db.sales
 GROUP BY PRODUCTLINE, MONTH(orderDate);
 ```
 
-## 📦 Airflow DAG Structure
+## 🚀 Getting Started
 
-```yaml
-extract_csv_minio     ->   write_parquet_warehouse
-                            |
-                          ↓
-            transform_parquet_and_write_iceberg
-                            |
-                          ↓
-                 trino_query_business_logic
+All services needed to run the pipeline are provided in a single Docker Compose file.
 
-```
+- 'make up': Starts all services in the Docker Compose file.
+- 'make down': Shuts down all services and removes all images in the Docker Compose file.
+- 'make logs': Follows the logs of the running services.
+
+### Ports
+
+- **MinIO**:
+  - **Endpoint**: 9020
+  - **Web UI**: 9021
+- **Trino**:
+  - 8089
+- **Superset**:
+  - 8088
+- **Airflow**:
+  - 9093
+- **Hive Metastore**:
+  - 9083
