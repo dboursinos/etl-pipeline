@@ -4,22 +4,28 @@ import boto3
 import pickle
 from prophet import Prophet
 from io import BytesIO
+import pyarrow.dataset as ds
+import pyarrow.fs
 
 import s3fs
 
-S3_BUCKET = "ml"
+S3_BUCKET = "machine-learning"
 FEATURE_PATH = "features/monthly_sales"
 MODEL_PATH = "models/"
 
 # Configure S3
-fs = s3fs.S3FileSystem(
-    key=os.environ["AWS_ACCESS_KEY_ID"],
-    secret=os.environ["AWS_SECRET_ACCESS_KEY"],
-    client_kwargs={"endpoint_url": os.environ["S3_ENDPOINT"]},
+fs = pyarrow.fs.S3FileSystem(
+    access_key=os.environ["AWS_ACCESS_KEY_ID"],
+    secret_key=os.environ["AWS_SECRET_ACCESS_KEY"],
+    endpoint_override=os.environ["S3_ENDPOINT"],
+)
+
+dataset = ds.dataset(
+    source=f"{S3_BUCKET}/{FEATURE_PATH}", filesystem=fs, format="parquet"
 )
 
 # Load the dataset
-df = pd.read_parquet(f"s3://{S3_BUCKET}/{FEATURE_PATH}", filesystem=fs)
+df = dataset.to_table().to_pandas()
 
 # Group by productline and train a model per group
 for productline, group_df in df.groupby("PRODUCTLINE"):

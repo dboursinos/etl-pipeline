@@ -15,10 +15,12 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --upgrade pip
 
 RUN pip install \
-  pandas \
-  s3fs \
+  pandas==2.3.0 \
+  s3fs==2025.5.1 \
   boto3 \
-  prophet
+  prophet==1.1.7 \
+  pyarrow==20.0.0 \
+  fastparquet==2024.11.0
 
 WORKDIR /app
 
