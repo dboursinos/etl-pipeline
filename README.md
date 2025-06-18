@@ -70,9 +70,9 @@ GROUP BY PRODUCTLINE, MONTH(orderDate);
 
 All services needed to run the pipeline are provided in a single Docker Compose file.
 
-- 'make up': Starts all services in the Docker Compose file.
-- 'make down': Shuts down all services and removes all images in the Docker Compose file.
-- 'make logs': Follows the logs of the running services.
+- `make up`: Starts all services in the Docker Compose file.
+- `make down`: Shuts down all services and removes all images in the Docker Compose file.
+- `make logs`: Follows the logs of the running services.
 
 ### Ports
 
