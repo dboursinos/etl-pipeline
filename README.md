@@ -9,25 +9,35 @@ This project implements a modern, scalable ETL pipeline using Apache Spark, Apac
 ## 🔁 Pipeline Flow
 
 ### 1. **Extract CSV Data from MinIO**
+
 - Raw sales data is stored as CSV files in a MinIO bucket.
 - A Spark job reads these files (`extract.py`).
 - Additional metadata is added (e.g., `ingestion_date`, `source_file`).
 - Output is written as partitioned **Parquet** files to a *warehouse* bucket.
 
 ### 2. **Transform & Structure**
+
 - Spark reads the previously generated Parquet files (`transform.py`).
 - Schema is explicitly defined with typed columns (e.g., `INT`, `STRING`, `DATE`).
 - Simple transformations and cleanups are applied (e.g., date parsing, formatting).
 - The output is written to an **Apache Iceberg** table using the **HiveCatalog**.
 
 ### 3. **Catalog with Hive Metastore**
+
 - Tables are registered in Hive Metastore, enabling query engines like Trino to discover them.
 - The warehouse path is configured as an S3-compatible bucket in MinIO.
 
 ### 4. **Query & Analyze with Trino**
+
 - Trino connects to Hive Metastore and reads Iceberg tables directly.
 - Business logic and aggregation queries (e.g., sales per product per month) are executed.
 - Results can be consumed by visualization tools like **Apache Superset**.
+
+### 5. **Business Intelligence (BI) with Superset**
+
+- Apache Superset is connected to Trino as a SQL source.
+- It enables rich visual dashboards and data exploration over the Iceberg tables.
+- Business users can analyze product performance, seasonal trends, and historical sales via an interactive UI.
 
 ---
 
@@ -41,7 +51,7 @@ This project implements a modern, scalable ETL pipeline using Apache Spark, Apac
 | **Hive Metastore** | Catalog and schema registry for Iceberg    |
 | **Trino**        | Distributed SQL engine for analytics         |
 | **Apache Airflow** | Workflow orchestration of the entire pipeline |
-| **Superset**     | Dashboarding and visualization (optional)    |
+| **Superset**     | BI and dashboard visualization               |
 
 ---
 
@@ -77,3 +87,13 @@ All services needed to run the pipeline are provided in a single Docker Compose 
   - 9093
 - **Hive Metastore**:
   - 9083
+
+## Screenshots
+
+#### Simple ETL Pipeline in Airflow
+
+![Dashboard](images/airflow_pipeline.png)
+
+#### Business Intelligence with Superset
+
+![Superset](images/superset.png)

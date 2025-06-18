@@ -59,26 +59,6 @@ with DAG(
         },
     )
 
-    spark_optimize_table = SparkSubmitOperator(
-        task_id="spark_optimize_table",
-        application="/opt/airflow/spark_jobs/sales_project/optimize_table.py",
-        conn_id="spark_default",
-        verbose=True,
-        name="optimize-table",
-        conf={
-            "spark.sql.catalog.iceberg": "org.apache.iceberg.spark.SparkCatalog",
-            "spark.sql.catalog.iceberg.catalog-impl": "org.apache.iceberg.hive.HiveCatalog",
-            "spark.sql.catalog.iceberg.uri": "thrift://hive-metastore:9083",
-            "spark.sql.catalog.iceberg.warehouse": "s3a://warehouse/",
-            "spark.hadoop.fs.s3a.endpoint": "http://minio:9020",
-            "spark.hadoop.fs.s3a.access.key": "minioadmin",
-            "spark.hadoop.fs.s3a.secret.key": "minioadmin",
-            "spark.hadoop.fs.s3a.path.style.access": "true",
-            "spark.jars.packages": "org.apache.hadoop:hadoop-aws:3.3.4,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.3",
-            "spark.sql.parquet.compression.codec": "snappy",
-        },
-    )
-
     spark_prepare_features = SparkSubmitOperator(
         task_id="spark_prepare_features",
         application="/opt/airflow/spark_jobs/sales_project/spark_prepare_features.py",
@@ -140,5 +120,5 @@ with DAG(
     )
 
     (spark_job_extract >> spark_job_transform >> spark_prepare_features)
-    spark_job_extract >> spark_job_transform >> spark_job_aggregate
+    spark_job_transform >> spark_job_aggregate
     spark_job_transform >> trino_task >> print_task
