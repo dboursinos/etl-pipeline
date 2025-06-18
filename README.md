@@ -55,6 +55,30 @@ This project implements a modern, scalable ETL pipeline using Apache Spark, Apac
 
 ---
 
+## 🚀 Use Cases
+
+- Automated ETL pipelines on raw sales data
+- Centralized, queryable warehouse with Trino
+- BI dashboards for business teams in Superset
+- ML-based forecasting on cleaned sales data
+
+## 📊 Example Dashboard Insights
+
+Superset dashboards can be created to visualize:
+
+- Monthly sales trends per product line
+- Top-performing product categories
+- Forecasted vs. actual sales using ML models
+- Data quality reports for pipeline monitoring
+
+## 📝 Notes
+
+- Trino and Superset connect directly to Iceberg via Hive Metastore — no traditional RDBMS is needed.
+- Partitioning and Z-ordering are applied to Iceberg tables for query efficiency.
+- Forecast results from ML models are also stored in Iceberg for unified analysis.
+
+---
+
 ## 🧪 Example Query in Trino
 
 ```sql
