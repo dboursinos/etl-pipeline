@@ -17,6 +17,7 @@ RUN sudo apt-get install -y --no-install-recommends \
 
 USER airflow
 
+# For versions check https://github.com/zjj/airflow-alpine/blob/6993c00d745966f4f7582d50c8f73b373cef7eec/2.11.0/constraints-3.12.txt
 RUN pip install --no-cache-dir dbt-postgres \
   && pip install pyspark==3.5.6 \
   && pip install markupsafe==2.0.1 \
