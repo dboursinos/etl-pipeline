@@ -2,6 +2,9 @@ from airflow import DAG
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from airflow.providers.trino.operators.trino import TrinoOperator
 from airflow.operators.python import PythonOperator
+from airflow.providers.cncf.kubernetes.operators.pod import (
+    KubernetesPodOperator,
+)
 from datetime import datetime
 
 with DAG(
@@ -12,7 +15,7 @@ with DAG(
     tags=["spark", "iceberg", "minio"],
 ) as dag:
     spark_job_extract = SparkSubmitOperator(
-        task_id="spark_extract_transform",
+        task_id="spark_extract",
         application="/opt/airflow/spark_jobs/sales_project/extract.py",
         conn_id="spark_default",
         verbose=True,
@@ -119,6 +122,36 @@ with DAG(
         provide_context=True,
     )
 
-    (spark_job_extract >> spark_job_transform >> spark_prepare_features)
+    train_model_task = KubernetesPodOperator(
+        task_id="train_prophet_model",
+        name="train-prophet",
+        namespace="default",
+        image="airflow-ml-training",
+        image_pull_policy="Always",
+        cmds=["python", "train_prophet.py"],
+        volumes=[],
+        volume_mounts=[],
+        env_vars={
+            "AWS_ACCESS_KEY_ID": "minioadmin",
+            "AWS_SECRET_ACCESS_KEY": "minioadmin",
+            "S3_ENDPOINT": "http://192.168.1.70:9020",
+        },
+        get_logs=True,
+        is_delete_operator_pod=True,
+        in_cluster=False,  # Uses ~/.kube/config if False
+        config_file="/home/airflow/.kube/config",  # Required if not running in-cluster
+        arguments=[],
+        container_resources={
+            "limits": {"memory": "2Gi", "cpu": "1"},
+            "requests": {"memory": "1Gi", "cpu": "0.5"},
+        },
+    )
+
+    (
+        spark_job_extract
+        >> spark_job_transform
+        >> spark_prepare_features
+        >> train_model_task
+    )
     spark_job_transform >> spark_job_aggregate
     spark_job_transform >> trino_task >> print_task

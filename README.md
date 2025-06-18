@@ -39,6 +39,12 @@ This project implements a modern, scalable ETL pipeline using Apache Spark, Apac
 - It enables rich visual dashboards and data exploration over the Iceberg tables.
 - Business users can analyze product performance, seasonal trends, and historical sales via an interactive UI.
 
+### 6. **Machine Learning (ML) Training & Forecasting**
+
+- Spark reads the previously generated Iceberg tables and applies aggregations to generate a dataset for training.
+- The training jobs are executed in a Kubernetes cluster.
+- The model artifacts are stored in a MinIO bucket.
+
 ---
 
 ## 🧰 Technologies Used

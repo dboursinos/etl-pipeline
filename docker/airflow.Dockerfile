@@ -30,9 +30,12 @@ RUN pip install --no-cache-dir dbt-postgres \
   && pip install --upgrade pyarrow==14.0.0 \
   && pip install apache-airflow-providers-trino==5.9.0 \
   && pip install apache-airflow-providers-apache-spark \
+  && pip install apache-airflow-providers-cncf-kubernetes==10.5.0 \
   && pip install dbt-trino \
   && pip uninstall dbt \
   && pip install dbt-core
+
+COPY --chown=airflow:airflow .kube/config /home/airflow/.kube/config
 
 RUN airflow db migrate
 #RUN airflow db init
