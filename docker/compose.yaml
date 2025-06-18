@@ -530,18 +530,6 @@ services:
     networks:
       - etl-stack
 
-  hue:
-    image: gethue/hue:20250414-140101
-    container_name: hue
-    ports:
-      - "8890:8888"
-    volumes:
-      - ./hue-data/:/var/lib/hue
-    depends_on:
-      - hive-metastore
-    networks:
-      - etl-stack
-
   superset-init:
     container_name: superset-init
     #image: apache/superset:latest
