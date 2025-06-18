@@ -129,15 +129,6 @@ with DAG(
         do_xcom_push=True,
     )
 
-    trino_check = TrinoOperator(
-        task_id="trino_check",
-        sql=[
-            "SHOW SCHEMAS FROM iceberg",
-        ],
-        trino_conn_id="trino_default",
-        database="iceberg",
-    )
-
     def handle_trino_result(**context):
         result = context["ti"].xcom_pull(task_ids="trino_query")
         print("Trino Result:", result)
@@ -151,4 +142,3 @@ with DAG(
     (spark_job_extract >> spark_job_transform >> spark_prepare_features)
     spark_job_extract >> spark_job_transform >> spark_job_aggregate
     spark_job_transform >> trino_task >> print_task
-    trino_check
