@@ -19,6 +19,7 @@ RUN pip install \
   s3fs==2025.5.1 \
   boto3 \
   prophet==1.1.7 \
+  statsmodels==0.14.4 \
   pyarrow==20.0.0 \
   fastparquet==2024.11.0
 
@@ -26,6 +27,7 @@ WORKDIR /app
 
 # Copy the script to container
 COPY ./src/ml_jobs/sales_project/train_prophet.py .
+COPY ./src/ml_jobs/sales_project/train_exponential_smoothing.py .
 
 # Default command to run
-CMD ["python", "train_prophet.py"]
+#CMD ["python", "train_prophet.py"]

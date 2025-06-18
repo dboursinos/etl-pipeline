@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-This project implements a modern, scalable ETL pipeline using Apache Spark, Apache Iceberg, Hive Metastore, and Trino — all orchestrated with Apache Airflow and powered by object storage via MinIO. It enables structured data ingestion, transformation, and analysis with support for large-scale queries and dashboarding tools like Superset. It also showcases how the ETL can be extended to train ML models on kubernetes clusters.
+This project implements a modern, scalable ETL pipeline using Apache Spark, Apache Iceberg, Hive Metastore, and Trino — all orchestrated with Apache Airflow and powered by object storage via MinIO. It enables structured data ingestion, transformation, and analysis with support for large-scale queries and dashboarding tools like Superset. It also showcases how the ETL can be extended to train multiple ML models on kubernetes clusters.
 
 ---
 

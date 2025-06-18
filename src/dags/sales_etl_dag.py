@@ -122,7 +122,7 @@ with DAG(
         provide_context=True,
     )
 
-    train_model_task = KubernetesPodOperator(
+    train_prophet_task = KubernetesPodOperator(
         task_id="train_prophet_model",
         name="train-prophet",
         namespace="default",
@@ -147,11 +147,43 @@ with DAG(
         },
     )
 
+    train_exponential_smoothing_task = KubernetesPodOperator(
+        task_id="train_exponential_smoothing_model",
+        name="train-exponential-smoothing",
+        namespace="default",
+        image="192.168.1.67:5050/airflow-ml-training",
+        image_pull_policy="Always",
+        cmds=["python", "train_exponential_smoothing.py"],
+        volumes=[],
+        volume_mounts=[],
+        env_vars={
+            "AWS_ACCESS_KEY_ID": "minioadmin",
+            "AWS_SECRET_ACCESS_KEY": "minioadmin",
+            "S3_ENDPOINT": "http://192.168.1.70:9020",
+        },
+        get_logs=True,
+        # is_delete_operator_pod=True,
+        in_cluster=False,  # Uses ~/.kube/config if False
+        config_file="/home/airflow/.kube/config",  # Required if not running in-cluster
+        arguments=[],
+        container_resources={
+            "limits": {"memory": "2Gi", "cpu": "1"},
+            "requests": {"memory": "1Gi", "cpu": "0.5"},
+        },
+    )
+
     (
         spark_job_extract
         >> spark_job_transform
         >> spark_prepare_features
-        >> train_model_task
+        >> train_prophet_task
     )
+    (
+        spark_job_extract
+        >> spark_job_transform
+        >> spark_prepare_features
+        >> train_exponential_smoothing_task
+    )
+
     spark_job_transform >> spark_job_aggregate
     spark_job_transform >> trino_task >> print_task
