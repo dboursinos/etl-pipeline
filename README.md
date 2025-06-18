@@ -112,6 +112,20 @@ All services needed to run the pipeline are provided in a single Docker Compose 
 - **Hive Metastore**:
   - 9083
 
+### Known Issues
+
+- There is a [known issue](https://github.com/apache/superset/issues/10149) with superset and the first time it runs it may not accept the default username and password (admin/admin). The solution is in this [comment](https://github.com/apache/superset/issues/10149#issuecomment-2649344448):
+
+1. pull image `docker pull apache/superset`
+2. generate a key `openssl rand -base64 42`
+3. create a file `superset_config.py` with a key - for example in `c:/temp/`. It should look like this `SECRET_KEY = "CODE"`
+4. run docker `docker run -p 8088:8088 --name superset -v c:/temp/superset_config.py:/app/pythonpath/superset_config.py apache/superset:latest`
+5. it should be WAIT here, but i don't think it might be nessesarry
+6. run `docker exec -it superset superset db upgrade`
+7. run `docker exec -it superset superset fab create-admin --username admin --firstname Superset --lastname Admin --email admin@example.com --password admin`
+    run `docker exec -it superset superset init`
+    open `http://localhost:8088/` - and you will see a dashboard.
+
 ## Screenshots
 
 #### Simple ETL Pipeline in Airflow
