@@ -1,4 +1,4 @@
-# Data Pipeline with Spark, Iceberg, Hive, Trino & Airflow
+# Data Pipeline with Spark, Iceberg, Hive, Trino, Superset & Airflow
 
 ## 📋 Overview
 
