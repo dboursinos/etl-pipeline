@@ -121,3 +121,7 @@ All services needed to run the pipeline are provided in a single Docker Compose 
 #### Business Intelligence with Superset
 
 ![Superset](images/superset.png)
+
+## Credits
+
+- Data: [Kaggle](https://www.kaggle.com/datasets/kyanyoga/sample-sales-data/data)
