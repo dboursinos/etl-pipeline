@@ -10,8 +10,8 @@ monthly_sales = (
     .withColumn("month", month("ORDERDATE"))
     .groupBy("PRODUCTLINE", "year", "month")
     .agg(
-        round(sum("SALES"), 2).alias("total_sales"),
-        sum("QUANTITYORDERED").alias("total_quantity"),
+        round(sum("SALES"), 2).alias("monthly_sales"),
+        sum("QUANTITYORDERED").alias("monthly_quantity"),
     )
     .orderBy("PRODUCTLINE", "year", "month")
 )

@@ -7,17 +7,19 @@ from io import BytesIO
 import pyarrow.dataset as ds
 import pyarrow.fs
 
-import s3fs
+from s3fs import S3FileSystem
 
 S3_BUCKET = "machine-learning"
 FEATURE_PATH = "features/monthly_sales"
 MODEL_PATH = "models/"
 
 # Configure S3
-fs = pyarrow.fs.S3FileSystem(
-    access_key=os.environ["AWS_ACCESS_KEY_ID"],
-    secret_key=os.environ["AWS_SECRET_ACCESS_KEY"],
-    endpoint_override=os.environ["S3_ENDPOINT"],
+fs = S3FileSystem(
+    client_kwargs={
+        "endpoint_url": os.environ["S3_ENDPOINT"],
+    },
+    key=os.environ["AWS_ACCESS_KEY_ID"],
+    secret=os.environ["AWS_SECRET_ACCESS_KEY"],
 )
 
 dataset = ds.dataset(
@@ -34,5 +36,5 @@ for productline, group_df in df.groupby("PRODUCTLINE"):
     model.fit(group_df)
 
     # Save model to MinIO
-    with fs.open(f"s3://{S3_BUCKET}/{MODEL_PATH}{productline}_model.pkl", "wb") as f:
+    with fs.open(f"{S3_BUCKET}/{MODEL_PATH}{productline}_model.pkl", "wb") as f:
         pickle.dump(model, f)
